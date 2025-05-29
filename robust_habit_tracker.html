@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Habit Tracker">
+    <title>Daily Habit Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #2d3748;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            color: #718096;
+            font-size: 1.1em;
+        }
+        
+        .date-selector {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .date-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .nav-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: #3182ce;
+        }
+        
+        .nav-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .current-date {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+            text-align: center;
+        }
+        
+        .date-info {
+            text-align: center;
+            color: #718096;
+            font-size: 0.95em;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .data-entry-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .habit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        
+        .habit-table th,
+        .habit-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .habit-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .habit-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .checkbox-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .checkbox-input input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-input label {
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: white;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        
+        .textarea-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: white;
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .textarea-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        
+        .mood-tracker {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .mood-category {
+            margin-bottom: 16px;
+        }
+        
+        .mood-category:last-child {
+            margin-bottom: 0;
+        }
+        
+        .mood-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .mood-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .mood-option {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        
+        .mood-option:hover {
+            border-color: #4299e1;
+        }
+        
+        .mood-option.selected {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .save-btn {
+            width: 100%;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+        
+        .save-btn:hover {
+            background: #38a169;
+        }
+        
+        .save-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .success-message {
+            background: #48bb78;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 16px 0;
+            display: none;
+        }
+        
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .progress-period {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .period-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        
+        .period-btn.active {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .progress-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .progress-card h4 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+        
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #718096;
+            margin-top: 4px;
+        }
+        
+        .calendar-view {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-top: 16px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        
+        .calendar-day.header {
+            background: #4a5568;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .calendar-day.success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .calendar-day.partial {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .calendar-day.miss {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .calendar-day.no-data {
+            background: #e2e8f0;
+            color: #718096;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 5px;
+            }
+            
+            .habit-table {
+                font-size: 0.9em;
+            }
+            
+            .habit-table th,
+            .habit-table td {
+                padding: 8px;
+            }
+            
+            .mood-options {
+                gap: 6px;
+            }
+            
+            .mood-option {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Daily Habit Tracker</h1>
+            <div class="subtitle">Track your progress and build better habits</div>
+        </div>
+        
+        <div class="date-selector">
+            <div class="date-nav">
+                <button class="nav-btn" onclick="changeDate(-1)">Previous Day</button>
+                <div class="current-date" id="currentDate"></div>
+                <button class="nav-btn" onclick="changeDate(1)">Next Day</button>
+            </div>
+            <div class="date-info" id="dateInfo"></div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('entry')">Daily Entry</button>
+            <button class="tab" onclick="showTab('weekly')">Weekly View</button>
+            <button class="tab" onclick="showTab('monthly')">Monthly View</button>
+            <button class="tab" onclick="showTab('data')">Data Export</button>
+        </div>
+        
+        <div class="tab-content active" id="entry-content">
+            <div class="data-entry-section">
+                <div class="section-title">Daily Habit Tracking</div>
+                <div class="success-message" id="successMessage">Data saved successfully!</div>
+                
+                <table class="habit-table">
+                    <thead>
+                        <tr>
+                            <th>Habit</th>
+                            <th>Status/Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Workout (30 minutes)</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="workout_30min" value="true" id="workout_yes">
+                                    <label for="workout_yes">Completed</label>
+                                    <input type="radio" name="workout_30min" value="false" id="workout_no">
+                                    <label for="workout_no">Missed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>No Vaping</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="no_vaping" value="true" id="vaping_yes">
+                                    <label for="vaping_yes">Success</label>
+                                    <input type="radio" name="no_vaping" value="false" id="vaping_no">
+                                    <label for="vaping_no">Failed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>No Adderall</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="no_adderall" value="true" id="adderall_yes">
+                                    <label for="adderall_yes">Success</label>
+                                    <input type="radio" name="no_adderall" value="false" id="adderall_no">
+                                    <label for="adderall_no">Failed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>No Alcohol</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="no_alcohol" value="true" id="alcohol_yes">
+                                    <label for="alcohol_yes">Success</label>
+                                    <input type="radio" name="no_alcohol" value="false" id="alcohol_no">
+                                    <label for="alcohol_no">Failed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hours of Sleep</strong></td>
+                            <td><input type="number" name="sleep_hours" class="text-input" placeholder="e.g., 7.5" step="0.5" min="0" max="24"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Calories Tracked</strong></td>
+                            <td><input type="text" name="calories" class="text-input" placeholder="Enter calories or 'NA'"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bowel Strain Amount</strong></td>
+                            <td><input type="text" name="strain_amount" class="text-input" placeholder="e.g., mild, 5 minutes"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kegel Exercises</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="kegel_exercises" value="true" id="kegel_yes">
+                                    <label for="kegel_yes">Completed</label>
+                                    <input type="radio" name="kegel_exercises" value="false" id="kegel_no">
+                                    <label for="kegel_no">Missed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Red Light Therapy</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="red_light_therapy" value="true" id="redlight_yes">
+                                    <label for="redlight_yes">Completed</label>
+                                    <input type="radio" name="red_light_therapy" value="false" id="redlight_no">
+                                    <label for="redlight_no">Missed</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Smile Time (30 minutes)</strong></td>
+                            <td>
+                                <div class="checkbox-input">
+                                    <input type="radio" name="smile_30min" value="true" id="smile_yes">
+                                    <label for="smile_yes">Achieved</label>
+                                    <input type="radio" name="smile_30min" value="false" id="smile_no">
+                                    <label for="smile_no">Missed</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="mood-tracker">
+                    <div class="section-title">Daily Mood Assessment</div>
+                    
+                    <div class="mood-category">
+                        <label class="mood-label">Overall Energy Level</label>
+                        <div class="mood-options" data-category="energy">
+                            <div class="mood-option" data-value="exhausted">Exhausted</div>
+                            <div class="mood-option" data-value="low">Low Energy</div>
+                            <div class="mood-option" data-value="moderate">Moderate</div>
+                            <div class="mood-option" data-value="good">Good Energy</div>
+                            <div class="mood-option" data-value="high">High Energy</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mood-category">
+                        <label class="mood-label">Emotional State</label>
+                        <div class="mood-options" data-category="emotion">
+                            <div class="mood-option" data-value="depressed">Depressed</div>
+                            <div class="mood-option" data-value="anxious">Anxious</div>
+                            <div class="mood-option" data-value="stressed">Stressed</div>
+                            <div class="mood-option" data-value="neutral">Neutral</div>
+                            <div class="mood-option" data-value="content">Content</div>
+                            <div class="mood-option" data-value="happy">Happy</div>
+                            <div class="mood-option" data-value="joyful">Joyful</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mood-category">
+                        <label class="mood-label">Stress Level</label>
+                        <div class="mood-options" data-category="stress">
+                            <div class="mood-option" data-value="none">No Stress</div>
+                            <div class="mood-option" data-value="mild">Mild</div>
+                            <div class="mood-option" data-value="moderate">Moderate</div>
+                            <div class="mood-option" data-value="high">High</div>
+                            <div class="mood-option" data-value="overwhelming">Overwhelming</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mood-category">
+                        <label class="mood-label">Focus & Mental Clarity</label>
+                        <div class="mood-options" data-category="focus">
+                            <div class="mood-option" data-value="scattered">Very Scattered</div>
+                            <div class="mood-option" data-value="unfocused">Unfocused</div>
+                            <div class="mood-option" data-value="average">Average</div>
+                            <div class="mood-option" data-value="focused">Focused</div>
+                            <div class="mood-option" data-value="sharp">Very Sharp</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="habit-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>OCD Obsessions Notes</strong></td>
+                            <td><textarea name="ocd_obsessions" class="textarea-input" placeholder="Describe obsessive thoughts or behaviors today..."></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gratitude 1</strong></td>
+                            <td><input type="text" name="gratitude_1" class="text-input" placeholder="I'm grateful for..."></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gratitude 2</strong></td>
+                            <td><input type="text" name="gratitude_2" class="text-input" placeholder="I'm grateful for..."></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gratitude 3</strong></td>
+                            <td><input type="text" name="gratitude_3" class="text-input" placeholder="I'm grateful for..."></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Funniest Moment</strong></td>
+                            <td><textarea name="funny_moment" class="textarea-input" placeholder="What made you laugh or smile today?"></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <button class="save-btn" onclick="saveData()">Save Today's Data</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="weekly-content">
+            <div class="progress-section">
+                <div class="section-title">Weekly Progress View</div>
+                <div class="progress-period">
+                    <button class="period-btn active" onclick="setWeekView('current')">Current Week</button>
+                    <button class="period-btn" onclick="setWeekView('last')">Last Week</button>
+                    <button class="period-btn" onclick="setWeekView('all')">All Weeks</button>
+                </div>
+                <div id="weeklyProgressContent"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="monthly-content">
+            <div class="progress-section">
+                <div class="section-title">Monthly Progress View</div>
+                <div class="progress-period">
+                    <button class="period-btn active" onclick="setMonthView('current')">Current Month</button>
+                    <button class="period-btn" onclick="setMonthView('last')">Last Month</button>
+                    <button class="period-btn" onclick="setMonthView('all')">All Months</button>
+                </div>
+                <div id="monthlyProgressContent"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="data-content">
+            <div class="progress-section">
+                <div class="section-title">Data Management</div>
+                <p style="margin-bottom: 20px; color: #718096;">Export your data for backup or import previous data.</p>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <button class="period-btn" onclick="exportData()">Export All Data</button>
+                    <button class="period-btn" onclick="document.getElementById('fileInput').click()">Import Data</button>
+                    <button class="period-btn" onclick="clearAllData()" style="border-color: #e53e3e; color: #e53e3e;">Clear All Data</button>
+                </div>
+                
+                <input type="file" id="fileInput" accept=".json" onchange="importData(event)" style="display: none;">
+                
+                <div style="padding: 16px; background: #f7fafc; border-radius: 8px; font-size: 0.9em; color: #4a5568;">
+                    <strong>Data Storage:</strong> All data is stored locally on your device and persists between sessions. 
+                    Regular exports are recommended for backup purposes.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDateIndex = 0;
+        let dates = [];
+        let habitData = {};
+        let currentWeekView = 'current';
+        let currentMonthView = 'current';
+        
+        // Generate 6 months of dates
+        function generateDates() {
+            const startDate = new Date(2025, 5, 1); // June 1, 2025
+            const endDate = new Date(2025, 10, 30); // November 30, 2025
+            const dateArray = [];
+            
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                dateArray.push({
+                    date: d.toISOString().split('T')[0],
+                    display_date: d.toLocaleDateString('en-US', { 
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long', 
+                        day: 'numeric'
+                    }),
+                    short_date: d.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric'
+                    }),
+                    day_name: d.toLocaleDateString('en-US', { weekday: 'long' }),
+                    day_short: d.toLocaleDateString('en-US', { weekday: 'short' }),
+                    month: d.getMonth(),
+                    year: d.getFullYear(),
+                    week: getWeekNumber(d)
+                });
+            }
+            return dateArray;
+        }
+        
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        }
+        
+        function initializeHabitData() {
+            dates = generateDates();
+            
+            const savedData = localStorage.getItem('habitTrackerData');
+            if (savedData) {
+                try {
+                    habitData = JSON.parse(savedData);
+                } catch (e) {
+                    createNewHabitData();
+                }
+            } else {
+                createNewHabitData();
+            }
+            
+            // Ensure all dates exist
+            dates.forEach(dateInfo => {
+                if (!habitData[dateInfo.date]) {
+                    habitData[dateInfo.date] = createEmptyDayData();
+                }
+            });
+        }
+        
+        function createNewHabitData() {
+            habitData = {};
+            dates.forEach(dateInfo => {
+                habitData[dateInfo.date] = createEmptyDayData();
+            });
+        }
+        
+        function createEmptyDayData() {
+            return {
+                workout_30min: null,
+                no_vaping: null,
+                no_adderall: null,
+                no_alcohol: null,
+                sleep_hours: '',
+                calories: '',
+                strain_amount: '',
+                kegel_exercises: null,
+                red_light_therapy: null,
+                smile_30min: null,
+                mood_energy: '',
+                mood_emotion: '',
+                mood_stress: '',
+                mood_focus: '',
+                ocd_obsessions: '',
+                gratitude_1: '',
+                gratitude_2: '',
+                gratitude_3: '',
+                funny_moment: ''
+            };
+        }
+        
+        function init() {
+            initializeHabitData();
+            
+            // Find today's date
+            const today = new Date().toISOString().split('T')[0];
+            const todayIndex = dates.findIndex(d => d.date === today);
+            if (todayIndex !== -1) {
+                currentDateIndex = todayIndex;
+            }
+            
+            updateDisplay();
+            setupMoodTrackers();
+        }
+        
+        function updateDisplay() {
+            const currentDate = dates[currentDateIndex];
+            document.getElementById('currentDate').textContent = currentDate.display_date;
+            document.getElementById('dateInfo').textContent = 
+                `Day ${currentDateIndex + 1} of ${dates.length} in tracking period`;
+            
+            loadDayData();
+        }
+        
+        function changeDate(direction) {
+            const newIndex = currentDateIndex + direction;
+            if (newIndex >= 0 && newIndex < dates.length) {
+                currentDateIndex = newIndex;
+                updateDisplay();
+            }
+        }
+        
+        function loadDayData() {
+            const dateKey = dates[currentDateIndex].date;
+            const data = habitData[dateKey];
+            
+            // Clear all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Load radio button values
+            const radioGroups = ['workout_30min', 'no_vaping', 'no_adderall', 'no_alcohol', 
+                               'smile_30min', 'kegel_exercises', 'red_light_therapy'];
+            radioGroups.forEach(group => {
+                const value = data[group];
+                if (value !== null) {
+                    const radio = document.querySelector(`input[name="${group}"][value="${value}"]`);
+                    if (radio) radio.checked = true;
+                }
+            });
+            
+            // Load text inputs
+            const textInputs = ['sleep_hours', 'calories', 'strain_amount', 'ocd_obsessions', 
+                              'gratitude_1', 'gratitude_2', 'gratitude_3', 'funny_moment'];
+            textInputs.forEach(input => {
+                const element = document.querySelector(`[name="${input}"]`);
+                if (element) element.value = data[input] || '';
+            });
+            
+            // Load mood selections
+            const moodCategories = ['energy', 'emotion', 'stress', 'focus'];
+            moodCategories.forEach(category => {
+                const value = data[`mood_${category}`];
+                if (value) {
+                    const option = document.querySelector(`[data-category="${category}"] [data-value="${value}"]`);
+                    if (option) {
+                        // Clear other selections in this category
+                        document.querySelectorAll(`[data-category="${category}"] .mood-option`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        option.classList.add('selected');
+                    }
+                }
+            });
+        }
+        
+        function setupMoodTrackers() {
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const category = this.parentElement.dataset.category;
+                    const value = this.dataset.value;
+                    
+                    // Clear other selections in this category
+                    document.querySelectorAll(`[data-category="${category}"] .mood-option`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                });
+            });
+        }
+        
+        function saveData() {
+            const dateKey = dates[currentDateIndex].date;
+            
+            // Get radio button values
+            const radioGroups = ['workout_30min', 'no_vaping', 'no_adderall', 'no_alcohol', 
+                               'smile_30min', 'kegel_exercises', 'red_light_therapy'];
+            radioGroups.forEach(group => {
+                const radio = document.querySelector(`input[name="${group}"]:checked`);
+                habitData[dateKey][group] = radio ? (radio.value === 'true') : null;
+            });
+            
+            // Get text input values
+            const textInputs = ['sleep_hours', 'calories', 'strain_amount', 'ocd_obsessions', 
+                              'gratitude_1', 'gratitude_2', 'gratitude_3', 'funny_moment'];
+            textInputs.forEach(input => {
+                const element = document.querySelector(`[name="${input}"]`);
+                habitData[dateKey][input] = element ? element.value : '';
+            });
+            
+            // Get mood values
+            const moodCategories = ['energy', 'emotion', 'stress', 'focus'];
+            moodCategories.forEach(category => {
+                const selected = document.querySelector(`[data-category="${category}"] .mood-option.selected`);
+                habitData[dateKey][`mood_${category}`] = selected ? selected.dataset.value : '';
+            });
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('habitTrackerData', JSON.stringify(habitData));
+                const successMsg = document.getElementById('successMessage');
+                successMsg.style.display = 'block';
+                setTimeout(() => successMsg.style.display = 'none', 2000);
+            } catch (e) {
+                alert('Error saving data');
+            }
+        }
+        
+        function showTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-content`).classList.add('active');
+            
+            if (tabName === 'weekly') {
+                updateWeeklyView();
+            } else if (tabName === 'monthly') {
+                updateMonthlyView();
+            }
+        }
+        
+        function setWeekView(view) {
+            currentWeekView = view;
+            document.querySelectorAll('.progress-period .period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="setWeekView('${view}')"]`).classList.add('active');
+            updateWeeklyView();
+        }
+        
+        function setMonthView(view) {
+            currentMonthView = view;
+            document.querySelectorAll('#monthly-content .progress-period .period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="setMonthView('${view}')"]`).classList.add('active');
+            updateMonthlyView();
+        }
+        
+        function updateWeeklyView() {
+            const content = document.getElementById('weeklyProgressContent');
+            const currentWeek = dates[currentDateIndex].week;
+            const currentYear = dates[currentDateIndex].year;
+            
+            let weekData = [];
+            
+            if (currentWeekView === 'current') {
+                weekData = dates.filter(d => d.week === currentWeek && d.year === currentYear);
+            } else if (currentWeekView === 'last') {
+                const lastWeek = currentWeek - 1;
+                weekData = dates.filter(d => d.week === lastWeek && d.year === currentYear);
+            } else {
+                // Group by weeks
+                const weeks = {};
+                dates.forEach(d => {
+                    const key = `${d.year}-W${d.week}`;
+                    if (!weeks[key]) weeks[key] = [];
+                    weeks[key].push(d);
+                });
+                
+                let html = '<div class="progress-grid">';
+                Object.keys(weeks).forEach(weekKey => {
+                    const weekDates = weeks[weekKey];
+                    const stats = calculateWeekStats(weekDates);
+                    html += createWeekCard(weekKey, stats);
+                });
+                html += '</div>';
+                content.innerHTML = html;
+                return;
+            }
+            
+            const stats = calculateWeekStats(weekData);
+            const weekTitle = currentWeekView === 'current' ? 'Current Week' : 'Last Week';
+            
+            content.innerHTML = `
+                <div class="progress-card">
+                    <h3>${weekTitle} Progress</h3>
+                    ${createProgressBars(stats)}
+                    ${createCalendarView(weekData)}
+                </div>
+            `;
+        }
+        
+        function updateMonthlyView() {
+            const content = document.getElementById('monthlyProgressContent');
+            const currentMonth = dates[currentDateIndex].month;
+            const currentYear = dates[currentDateIndex].year;
+            
+            let monthData = [];
+            
+            if (currentMonthView === 'current') {
+                monthData = dates.filter(d => d.month === currentMonth && d.year === currentYear);
+            } else if (currentMonthView === 'last') {
+                const lastMonth = currentMonth - 1;
+                monthData = dates.filter(d => d.month === lastMonth && d.year === currentYear);
+            } else {
+                // Group by months
+                const months = {};
+                dates.forEach(d => {
+                    const key = `${d.year}-${d.month}`;
+                    if (!months[key]) months[key] = [];
+                    months[key].push(d);
+                });
+                
+                let html = '<div class="progress-grid">';
+                Object.keys(months).forEach(monthKey => {
+                    const monthDates = months[monthKey];
+                    const stats = calculateMonthStats(monthDates);
+                    const monthName = new Date(monthDates[0].year, monthDates[0].month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    html += createMonthCard(monthName, stats);
+                });
+                html += '</div>';
+                content.innerHTML = html;
+                return;
+            }
+            
+            const stats = calculateMonthStats(monthData);
+            const monthTitle = currentMonthView === 'current' ? 'Current Month' : 'Last Month';
+            
+            content.innerHTML = `
+                <div class="progress-card">
+                    <h3>${monthTitle} Progress</h3>
+                    ${createProgressBars(stats)}
+                    ${createCalendarView(monthData)}
+                </div>
+            `;
+        }
+        
+        function calculateWeekStats(weekDates) {
+            const stats = {
+                workout: { success: 0, total: 0 },
+                no_vaping: { success: 0, total: 0 },
+                no_adderall: { success: 0, total: 0 },
+                no_alcohol: { success: 0, total: 0 },
+                kegel: { success: 0, total: 0 },
+                redlight: { success: 0, total: 0 },
+                smile: { success: 0, total: 0 },
+                avgSleep: 0,
+                sleepCount: 0
+            };
+            
+            let totalSleep = 0;
+            
+            weekDates.forEach(dateInfo => {
+                const data = habitData[dateInfo.date];
+                if (!data) return;
+                
+                // Count habit completions
+                if (data.workout_30min !== null) {
+                    stats.workout.total++;
+                    if (data.workout_30min) stats.workout.success++;
+                }
+                if (data.no_vaping !== null) {
+                    stats.no_vaping.total++;
+                    if (data.no_vaping) stats.no_vaping.success++;
+                }
+                if (data.no_adderall !== null) {
+                    stats.no_adderall.total++;
+                    if (data.no_adderall) stats.no_adderall.success++;
+                }
+                if (data.no_alcohol !== null) {
+                    stats.no_alcohol.total++;
+                    if (data.no_alcohol) stats.no_alcohol.success++;
+                }
+                if (data.kegel_exercises !== null) {
+                    stats.kegel.total++;
+                    if (data.kegel_exercises) stats.kegel.success++;
+                }
+                if (data.red_light_therapy !== null) {
+                    stats.redlight.total++;
+                    if (data.red_light_therapy) stats.redlight.success++;
+                }
+                if (data.smile_30min !== null) {
+                    stats.smile.total++;
+                    if (data.smile_30min) stats.smile.success++;
+                }
+                
+                // Sleep average
+                if (data.sleep_hours && !isNaN(parseFloat(data.sleep_hours))) {
+                    totalSleep += parseFloat(data.sleep_hours);
+                    stats.sleepCount++;
+                }
+            });
+            
+            stats.avgSleep = stats.sleepCount > 0 ? (totalSleep / stats.sleepCount).toFixed(1) : 0;
+            
+            return stats;
+        }
+        
+        function calculateMonthStats(monthDates) {
+            return calculateWeekStats(monthDates); // Same calculation method
+        }
+        
+        function createProgressBars(stats) {
+            const habits = [
+                { key: 'workout', label: 'Workout' },
+                { key: 'no_vaping', label: 'No Vaping' },
+                { key: 'no_adderall', label: 'No Adderall' },
+                { key: 'no_alcohol', label: 'No Alcohol' },
+                { key: 'kegel', label: 'Kegel Exercises' },
+                { key: 'redlight', label: 'Red Light Therapy' },
+                { key: 'smile', label: 'Smile Time' }
+            ];
+            
+            let html = '<div class="progress-grid">';
+            
+            habits.forEach(habit => {
+                const data = stats[habit.key];
+                const percentage = data.total > 0 ? Math.round((data.success / data.total) * 100) : 0;
+                
+                html += `
+                    <div class="progress-card">
+                        <h4>${habit.label}</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>${data.success}/${data.total} days</span>
+                            <span>${percentage}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add sleep average
+            html += `
+                <div class="progress-card">
+                    <h4>Average Sleep</h4>
+                    <div style="font-size: 1.5em; font-weight: 600; color: #2d3748; text-align: center; padding: 16px;">
+                        ${stats.avgSleep} hours
+                    </div>
+                    <div class="progress-stats">
+                        <span>${stats.sleepCount} days tracked</span>
+                    </div>
+                </div>
+            `;
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function createWeekCard(weekKey, stats) {
+            const habits = ['workout', 'no_vaping', 'no_adderall', 'no_alcohol', 'kegel', 'redlight', 'smile'];
+            const completedHabits = habits.reduce((sum, key) => sum + stats[key].success, 0);
+            const totalPossible = habits.reduce((sum, key) => sum + stats[key].total, 0);
+            const overallPercentage = totalPossible > 0 ? Math.round((completedHabits / totalPossible) * 100) : 0;
+            
+            return `
+                <div class="progress-card">
+                    <h4>${weekKey}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${overallPercentage}%"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>Overall: ${overallPercentage}%</span>
+                        <span>Avg Sleep: ${stats.avgSleep}h</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createMonthCard(monthName, stats) {
+            const habits = ['workout', 'no_vaping', 'no_adderall', 'no_alcohol', 'kegel', 'redlight', 'smile'];
+            const completedHabits = habits.reduce((sum, key) => sum + stats[key].success, 0);
+            const totalPossible = habits.reduce((sum, key) => sum + stats[key].total, 0);
+            const overallPercentage = totalPossible > 0 ? Math.round((completedHabits / totalPossible) * 100) : 0;
+            
+            return `
+                <div class="progress-card">
+                    <h4>${monthName}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${overallPercentage}%"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>Overall: ${overallPercentage}%</span>
+                        <span>Avg Sleep: ${stats.avgSleep}h</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createCalendarView(dateList) {
+            if (dateList.length === 0) return '';
+            
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            let html = '<div class="calendar-view">';
+            
+            // Add day headers
+            days.forEach(day => {
+                html += `<div class="calendar-day header">${day}</div>`;
+            });
+            
+            // Add calendar days
+            dateList.forEach(dateInfo => {
+                const data = habitData[dateInfo.date];
+                const completionRate = calculateDayCompletion(data);
+                let className = 'no-data';
+                
+                if (completionRate >= 80) className = 'success';
+                else if (completionRate >= 50) className = 'partial';
+                else if (completionRate > 0) className = 'miss';
+                
+                html += `<div class="calendar-day ${className}" title="${dateInfo.short_date}: ${completionRate}% complete">${dateInfo.short_date.split(' ')[1]}</div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function calculateDayCompletion(data) {
+            if (!data) return 0;
+            
+            const habits = ['workout_30min', 'no_vaping', 'no_adderall', 'no_alcohol', 'kegel_exercises', 'red_light_therapy', 'smile_30min'];
+            let completed = 0;
+            let total = 0;
+            
+            habits.forEach(habit => {
+                if (data[habit] !== null) {
+                    total++;
+                    if (data[habit]) completed++;
+                }
+            });
+            
+            return total > 0 ? Math.round((completed / total) * 100) : 0;
+        }
+        
+        function exportData() {
+            const dataStr = JSON.stringify(habitData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `habit_tracker_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    habitData = importedData;
+                    localStorage.setItem('habitTrackerData', JSON.stringify(habitData));
+                    
+                    loadDayData();
+                    alert('Data imported successfully!');
+                } catch (error) {
+                    alert('Error importing data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone!')) {
+                localStorage.removeItem('habitTrackerData');
+                createNewHabitData();
+                localStorage.setItem('habitTrackerData', JSON.stringify(habitData));
+                loadDayData();
+                alert('All data has been cleared.');
+            }
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
